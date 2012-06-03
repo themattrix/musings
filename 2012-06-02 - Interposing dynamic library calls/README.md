@@ -203,7 +203,7 @@ $ make do-interpose APP='uname -v'      # Interpose
 Darwin Kernel Version 10.8.0: Tue Jun  7 16:33:36 PDT 2011; root:xnu-1504.15.3~1/RELEASE_I386
 ```
 
-By default, the generated code timestamps the function calls (`interpose_usr_utsname.cpp`):
+By default, the generated code (`interpose_usr_utsname.cpp`) timestamps the function calls:
 ```C++
 template<typename Function>
 auto uname(Function original, struct utsname *arg1) -> int
