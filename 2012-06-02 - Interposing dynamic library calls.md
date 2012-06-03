@@ -142,7 +142,7 @@ int uname(struct utsname *name)
       //
       // Let's change the version to "Johnny 5".
       //
-      strcpy(name->version, "Johnny 5");
+      strncpy(name->version, "Johnny 5", sizeof(name->version));
    }
 
    // return the original result, unchanged
@@ -185,11 +185,59 @@ Johnny 5
 
 ## Automate
 
-In **Step 3** I had mentioned that the interposing code is mostly boiler&ndash;plate. With that in mind, I wrote a [small utility to automatically generate the interposing code](https://github.com/themattrix/interpose) from a header. The generated code is C++ instead of C, so we can have some more fun with it. Let's duplicate the above example with this new utility:
+In **Step 3** I had mentioned that the interposing code is mostly boiler&ndash;plate. With that in mind, I wrote a [small utility to automatically generate the interposing code](https://github.com/themattrix/interpose) from a header. The generated code is C++(11) instead of C, so we can have some more fun with it. Let's duplicate the above example with this new utility:
+```
+$ git clone git://github.com/themattrix/interpose.git
+$ cd interpose/src
+$ DEST=.                                # Output generated content to this directory
+$ HEADER=/usr/include/sys/utsname.h     # Generate code from this header
+$ API_LIB=/usr/lib/libc.dylib           # OS X only: library containing original uname()
+$ make interpose-src                    # Generate code
+$ make interpose-lib                    # Compile code
+$ make do-interpose APP='uname -v'      # Interpose
 
-TODO
+=================================================[ Running interposing code ]===
+[1338738075.588650][call].......... uname()
+[1338738075.588706][done][0.000056] uname()
 
-git://github.com/themattrix/interpose.git
+Darwin Kernel Version 10.8.0: Tue Jun  7 16:33:36 PDT 2011; root:xnu-1504.15.3~1/RELEASE_I386
+```
+
+By default, the generated code timestamps the function calls (`interpose_usr_utsname.cpp`):
+```C++
+template<typename Function>
+auto uname(Function original, struct utsname *arg1) -> int
+{
+   return timestamp(original(arg1));
+}
+```
+
+Instead, let's match the functionality of our C code:
+```C++
+template<typename Function>
+auto uname(Function original, struct utsname *name) -> int
+{
+   int result(original(name));
+
+   if(result == 0)
+   {
+      name->version[std::string("Johnny 5").copy(name->version, sizeof(name->version))] = '\0';
+   }
+
+   return result;
+}
+```
+
+Let's see how we did:
+```
+$ make interpose-lib
+$ make do-interpose APP='uname -v'
+
+=================================================[ Running interposing code ]===
+Johnny 5
+```
+
+Perfect!
 
 
 ## Resources
