@@ -197,9 +197,7 @@ $ make interpose-lib                    # Compile code
 $ make do-interpose APP='uname -v'      # Interpose
 
 =================================================[ Running interposing code ]===
-[1338738075.588650][call].......... uname()
 [1338738075.588706][done][0.000056] uname()
-
 Darwin Kernel Version 10.8.0: Tue Jun  7 16:33:36 PDT 2011; root:xnu-1504.15.3~1/RELEASE_I386
 ```
 
@@ -221,7 +219,11 @@ auto uname(Function original, struct utsname *name) -> int
 
    if(result == 0)
    {
-      name->version[std::string("Johnny 5").copy(name->version, sizeof(name->version))] = '\0';
+      // just so I don't have to say name->vesion several times
+      auto &v(name->version);
+
+      // copy "Johnny 5" into name->version
+      v[std::string("Johnny 5").copy(v, sizeof(v))] = '\0';
    }
 
    return result;
