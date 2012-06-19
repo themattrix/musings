@@ -155,12 +155,12 @@ Without the comments the code is fairly short and most of it is boiler&ndash;pla
 
 ## Step 4: Compile a shared library
 
-Linux:
+OS X:
 ```
 $ gcc -shared -fPIC -Wall -Werror -std=c99 -o libinterpose_uname.dylib interpose_uname.c
 ```
 
-OS X:
+Linux:
 ```
 $ gcc -shared -fPIC -Wall -Werror -std=c99 -o libinterpose_uname.so interpose_uname.c
 ```
@@ -170,13 +170,13 @@ $ gcc -shared -fPIC -Wall -Werror -std=c99 -o libinterpose_uname.so interpose_un
 
 Finally, the fruits of our labor. Let's run `uname -v` again, this time with our custom library pre&ndash;loaded.
 
-Linux:
+OS X:
 ```
 $ DYLD_FORCE_FLAT_NAMESPACE=1 DYLD_INSERT_LIBRARIES=libinterpose_uname.dylib uname -v
 Johnny 5
 ```
 
-OS X:
+Linux:
 ```
 $ LD_PRELOAD=libinterpose_uname.so uname -v
 Johnny 5
