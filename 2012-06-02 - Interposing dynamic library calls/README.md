@@ -219,7 +219,7 @@ auto uname(Function original, struct utsname *name) -> int
 
    if(result == 0)
    {
-      // just so I don't have to say name->vesion several times
+      // just so I don't have to say name->version several times
       auto &v(name->version);
 
       // copy "Johnny 5" into name->version
