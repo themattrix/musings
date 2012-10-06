@@ -189,12 +189,12 @@ In **Step 3** I had mentioned that the interposing code is mostly boiler&ndash;p
 ```
 $ git clone git://github.com/themattrix/interpose.git
 $ cd interpose/src
-$ DEST=.                                # Output generated content to this directory
-$ HEADER=/usr/include/sys/utsname.h     # Generate code from this header
-$ API_LIB=/usr/lib/libc.dylib           # OS X only: library containing original uname()
-$ make interpose-src                    # Generate code
-$ make interpose-lib                    # Compile code
-$ make do-interpose APP='uname -v'      # Interpose
+$ export DEST=.                                # Output generated content to this directory
+$ export HEADER=/usr/include/sys/utsname.h     # Generate code from this header
+$ export API_LIB=/usr/lib/libc.dylib           # OS X only: library containing original uname()
+$ make interpose-src                           # Generate code
+$ make interpose-lib                           # Compile code
+$ make do-interpose APP='uname -v'             # Interpose
 
 =================================================[ Running interposing code ]===
 [1338738075.588706][done][0.000056] uname()
